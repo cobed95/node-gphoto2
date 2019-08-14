@@ -45,14 +45,14 @@ GPhoto2::~GPhoto2() {
 
 NAN_MODULE_INIT(GPhoto2::Initialize) {
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
-
+  v8::Local<v8::Context> context = Nan::GetCurrentContext();
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
   tpl->SetClassName(Nan::New("GPhoto2").ToLocalChecked());
 
   Nan::SetPrototypeMethod(tpl, "list", List);
   Nan::SetPrototypeMethod(tpl, "setLogLevel", SetLogLevel);
 
-  constructor.Reset(tpl->GetFunction());
+  constructor.Reset(tpl->GetFunction(context).ToLocalChecked());
 
   Nan::Set(target, Nan::New("GPhoto2").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 }

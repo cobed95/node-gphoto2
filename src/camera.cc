@@ -31,6 +31,7 @@ GPCamera::~GPCamera() {
 
 NAN_MODULE_INIT(GPCamera::Initialize) {
   v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+  v8::Local<v8::Context> context = Nan::GetCurrentContext();
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   tpl->SetClassName(Nan::New("Camera").ToLocalChecked());
@@ -40,7 +41,7 @@ NAN_MODULE_INIT(GPCamera::Initialize) {
   Nan::SetPrototypeMethod(tpl, "takePicture", TakePicture);
   Nan::SetPrototypeMethod(tpl, "downloadPicture", DownloadPicture);
 
-  constructor.Reset(tpl->GetFunction());
+  constructor.Reset(tpl->GetFunction(context).ToLocalChecked());
 
   Nan::Set(target, Nan::New("Camera").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
 }
