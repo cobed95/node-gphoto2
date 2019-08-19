@@ -148,9 +148,14 @@ void GPCamera::Async_CaptureCb(uv_work_t *req, int status) {
 
   Nan::Call(capture_req->cb, argc, argv);
 
-  if (capture_req->ret == GP_OK && capture_req->file != NULL) {
+  // if (capture_req->ret == GP_OK && capture_req->file != NULL) {
+  //   gp_file_free(capture_req->file);
+  // }
+
+  if (capture_req->file != NULL) {
     gp_file_free(capture_req->file);
   }
+
   capture_req->cameraObject->Unref();
   gp_context_unref(capture_req->context);
   capture_req->cb.Reset();
