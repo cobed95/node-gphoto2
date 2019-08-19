@@ -400,6 +400,7 @@ void GPCamera::capturePreview(take_picture_request *req) {
   // }
   if (file != NULL) {
     gp_file_free(file);
+    file = NULL;
   }
 
   req->ret = retval;

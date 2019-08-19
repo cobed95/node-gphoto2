@@ -154,6 +154,7 @@ void GPCamera::Async_CaptureCb(uv_work_t *req, int status) {
 
   if (capture_req->file != NULL) {
     gp_file_free(capture_req->file);
+    file = NULL;
   }
 
   capture_req->cameraObject->Unref();
