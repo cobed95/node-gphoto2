@@ -184,6 +184,10 @@ void GPhoto2::Async_ListCb(uv_work_t *req, int status) {
   v8::Local<v8::Array> result = Nan::New<v8::Array>(count);
   argv[0] = result;
 
+  if (count == 0) {
+    goto finally;
+  }
+
   for (i = 0; i < count; i++) {
     const char *name_, *port_;
 
@@ -205,6 +209,7 @@ void GPhoto2::Async_ListCb(uv_work_t *req, int status) {
   }
 
   Nan::Call(list_req->cb, 1, argv);
+  argv[0].Clear();
 
 finally:
   gp_context_unref(list_req->context);
