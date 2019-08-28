@@ -42,6 +42,20 @@ GPhoto2::~GPhoto2() {
     delete emitFuncCb;
     emitFuncCb = NULL;
   }
+
+  if (context_ != NULL) {
+    gp_context_unref(context_);
+  }
+
+  if (portinfolist_ != NULL) {
+    gp_port_info_list_free(portinfolist_);
+    portinfolist_ = NULL;
+  }
+
+  if (abilities_ != NULL) {
+    gp_abilities_list_free(abilities_);
+    abilities_ = NULL;
+  }
 }
 
 NAN_MODULE_INIT(GPhoto2::Initialize) {
