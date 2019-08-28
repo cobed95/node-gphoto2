@@ -2,7 +2,7 @@
   "author": "Leonhardt Wille <wille@riverlabs.de>",
   "name": "@cobed95/gphoto2",
   "description": "Node.js wrapper for libgphoto2",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "homepage": "https://github.com/cobed95/node-gphoto2",
   "keywords": [
     "photography",

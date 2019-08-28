@@ -31,6 +31,7 @@ GPhoto2::GPhoto2() : Nan::ObjectWrap(), portinfolist_(NULL), abilities_(NULL) {
 }
 
 GPhoto2::~GPhoto2() {
+  printf("gphoto gc\n");
   if (logFuncId) {
     gp_log_remove_func(logFuncId);
     logFuncId = 0;
@@ -51,6 +52,7 @@ NAN_MODULE_INIT(GPhoto2::Initialize) {
 
   Nan::SetPrototypeMethod(tpl, "list", List);
   Nan::SetPrototypeMethod(tpl, "setLogLevel", SetLogLevel);
+  Nan::SetPrototypeMethod(tpl, "enableGC", EnableGC);
 
   constructor.Reset(tpl->GetFunction(context).ToLocalChecked());
 
@@ -108,6 +110,14 @@ NAN_METHOD(GPhoto2::SetLogLevel) {
                   static_cast<void *>(gphoto));
 
   return info.GetReturnValue().SetUndefined();
+}
+
+NAN_METHOD(GPhoto2::EnableGC) {
+  Nan::HandleScope scope;
+
+  GPhoto2 *gphoto = ObjectWrap::Unwrap<GPhoto2>(info.This());
+  gphoto->Ref();
+  uv_close(reinterpret_cast<uv_handle_t*>(&gphoto->asyncLog), GPhoto2::Async_CloseCallback);
 }
 
 void GPhoto2::LogHandler(GPLogLevel level, const char *domain, const char *str, void *data) {
@@ -184,10 +194,6 @@ void GPhoto2::Async_ListCb(uv_work_t *req, int status) {
   v8::Local<v8::Array> result = Nan::New<v8::Array>(count);
   argv[0] = result;
 
-  if (count == 0) {
-    goto finally;
-  }
-
   for (i = 0; i < count; i++) {
     const char *name_, *port_;
 
@@ -209,7 +215,6 @@ void GPhoto2::Async_ListCb(uv_work_t *req, int status) {
   }
 
   Nan::Call(list_req->cb, 1, argv);
-  argv[0].Clear();
 
 finally:
   gp_context_unref(list_req->context);
@@ -222,6 +227,11 @@ finally:
   if (try_catch.HasCaught()) {
     return Nan::FatalException(try_catch);
   }
+}
+
+void GPhoto2::Async_CloseCallback(uv_handle_t *handle) {
+  GPhoto2 *gphoto = static_cast<GPhoto2*>(handle->data);
+  gphoto->Unref();
 }
 
 int GPhoto2::openCamera(GPCamera *p) {
