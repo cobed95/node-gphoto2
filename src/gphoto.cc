@@ -31,7 +31,6 @@ GPhoto2::GPhoto2() : Nan::ObjectWrap(), portinfolist_(NULL), abilities_(NULL) {
 }
 
 GPhoto2::~GPhoto2() {
-  printf("gphoto gc\n");
   if (logFuncId) {
     gp_log_remove_func(logFuncId);
     logFuncId = 0;
