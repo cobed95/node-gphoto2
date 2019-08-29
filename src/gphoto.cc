@@ -65,7 +65,8 @@ NAN_MODULE_INIT(GPhoto2::Initialize) {
 
   Nan::SetPrototypeMethod(tpl, "list", List);
   Nan::SetPrototypeMethod(tpl, "setLogLevel", SetLogLevel);
-  Nan::SetPrototypeMethod(tpl, "enableGC", EnableGC);
+  Nan::SetPrototypeMethod(tpl, "enableGC", CloseMemberHandle);
+  Nan::SetPrototypeMethod(tpl, "closeMemberHandle", CloseMemberHandle);
 
   constructor.Reset(tpl->GetFunction(context).ToLocalChecked());
 
@@ -125,7 +126,7 @@ NAN_METHOD(GPhoto2::SetLogLevel) {
   return info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(GPhoto2::EnableGC) {
+NAN_METHOD(GPhoto2::CloseMemberHandle) {
   Nan::HandleScope scope;
 
   GPhoto2 *gphoto = ObjectWrap::Unwrap<GPhoto2>(info.This());

@@ -60,7 +60,7 @@ class GPhoto2 : public Nan::ObjectWrap {
   static NAN_METHOD(New);
   static NAN_METHOD(List);
   static NAN_METHOD(SetLogLevel);
-  static NAN_METHOD(EnableGC);
+  static NAN_METHOD(CloseMemberHandle);
 
   static void LogHandler(GPLogLevel level, const char *domain, const char *str, void *data);
   static void Async_LogClose(uv_handle_t *handle);
