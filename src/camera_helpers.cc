@@ -304,6 +304,12 @@ int GPCamera::getCameraFile(take_picture_request *req, CameraFile **file) {
   if (!req->target_path.empty()) {
     char *tmpname = strdup(req->target_path.c_str());
     fd = mkstemp(tmpname);
+    if (errno == EEXIST) {
+      // mkstemp create unique file name work on mac. so remove exists and open manually
+      retval = remove(tmpname);
+      fd = open(tmpname, O_CREAT | O_RDWR);
+      if (fd < 0) fprintf(stderr, "%s:failed create temp file:%s\n", __func__, tmpname);
+    }
     req->target_path = tmpname;
   } else if (!req->socket_path.empty()) {
     struct sockaddr_un serv_addr;
